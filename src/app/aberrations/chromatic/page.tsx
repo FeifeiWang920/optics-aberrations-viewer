@@ -5,6 +5,7 @@ import { Navbar } from '@/components/Navbar';
 import { AberrationPageLayout } from '@/components/AberrationPageLayout';
 import { RayCanvas } from '@/components/RayCanvas';
 import { Slider } from '@/components/Slider';
+import { AberrationVisuals } from '@/components/AberrationVisuals';
 
 export default function ChromaticAberrationPage() {
   const [dispersion, setDispersion] = useState(0.5);
@@ -23,15 +24,22 @@ export default function ChromaticAberrationPage() {
               <span className="text-accent-cyan">01.</span> 
               色散模拟 (Dispersion Simulation)
             </h2>
-            <div className="relative">
-                <RayCanvas 
-                  aberrationType="chromatic" 
-                  parameter={dispersion} 
-                  rayCount={15}
-                />
-                <div className="absolute top-4 left-4 p-2 glass rounded text-[10px] text-white">
-                    波长范围: 400nm - 700nm
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              <div className="lg:col-span-3">
+                <div className="relative">
+                    <RayCanvas 
+                      aberrationType="chromatic" 
+                      parameter={dispersion} 
+                      rayCount={15}
+                    />
+                    <div className="absolute top-4 left-4 p-2 glass rounded text-[10px] text-white">
+                        波长范围: 400nm - 700nm
+                    </div>
                 </div>
+              </div>
+              <div className="lg:col-span-2">
+                <AberrationVisuals aberrationType="chromatic" parameter={dispersion} />
+              </div>
             </div>
             
             <div className="glass p-8 rounded-xl space-y-8 neon-border">

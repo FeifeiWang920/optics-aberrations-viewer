@@ -5,6 +5,7 @@ import { Navbar } from '@/components/Navbar';
 import { AberrationPageLayout } from '@/components/AberrationPageLayout';
 import { RayCanvas } from '@/components/RayCanvas';
 import { Slider } from '@/components/Slider';
+import { AberrationVisuals } from '@/components/AberrationVisuals';
 
 export default function ComaPage() {
   const [comaAmount, setComaAmount] = useState(0.5);
@@ -23,11 +24,18 @@ export default function ComaPage() {
               <span className="text-accent-cyan">01.</span> 
               彗点形状模拟 (Comatic Flare Simulation)
             </h2>
-            <RayCanvas 
-              aberrationType="coma" 
-              parameter={comaAmount} 
-              rayCount={15}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              <div className="lg:col-span-3">
+                <RayCanvas 
+                  aberrationType="coma" 
+                  parameter={comaAmount} 
+                  rayCount={15}
+                />
+              </div>
+              <div className="lg:col-span-2">
+                <AberrationVisuals aberrationType="coma" parameter={comaAmount} />
+              </div>
+            </div>
             
             <div className="glass p-8 rounded-xl space-y-8 neon-border">
               <Slider 

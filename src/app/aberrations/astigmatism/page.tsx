@@ -5,6 +5,7 @@ import { Navbar } from '@/components/Navbar';
 import { AberrationPageLayout } from '@/components/AberrationPageLayout';
 import { RayCanvas } from '@/components/RayCanvas';
 import { Slider } from '@/components/Slider';
+import { AberrationVisuals } from '@/components/AberrationVisuals';
 
 export default function AstigmatismPage() {
   const [astigmatismAmount, setAstigmatismAmount] = useState(0.5);
@@ -23,11 +24,18 @@ export default function AstigmatismPage() {
               <span className="text-accent-cyan">01.</span> 
               焦线与弥散圆模拟
             </h2>
-            <RayCanvas 
-              aberrationType="astigmatism" 
-              parameter={astigmatismAmount} 
-              rayCount={13}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              <div className="lg:col-span-3">
+                <RayCanvas 
+                  aberrationType="astigmatism" 
+                  parameter={astigmatismAmount} 
+                  rayCount={13}
+                />
+              </div>
+              <div className="lg:col-span-2">
+                <AberrationVisuals aberrationType="astigmatism" parameter={astigmatismAmount} />
+              </div>
+            </div>
             
             <div className="glass p-8 rounded-xl space-y-8 neon-border">
               <Slider 

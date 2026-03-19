@@ -5,6 +5,7 @@ import { Navbar } from '@/components/Navbar';
 import { AberrationPageLayout } from '@/components/AberrationPageLayout';
 import { RayCanvas } from '@/components/RayCanvas';
 import { Slider } from '@/components/Slider';
+import { AberrationVisuals } from '@/components/AberrationVisuals';
 
 export default function FieldCurvaturePage() {
   const [curvatureAmount, setCurvatureAmount] = useState(0.5);
@@ -23,11 +24,18 @@ export default function FieldCurvaturePage() {
               <span className="text-accent-cyan">01.</span> 
               像面弯曲模拟 (Petzval Surface Simulation)
             </h2>
-            <RayCanvas 
-              aberrationType="field-curvature" 
-              parameter={curvatureAmount} 
-              rayCount={17}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+              <div className="lg:col-span-3">
+                <RayCanvas 
+                  aberrationType="field-curvature" 
+                  parameter={curvatureAmount} 
+                  rayCount={17}
+                />
+              </div>
+              <div className="lg:col-span-2">
+                <AberrationVisuals aberrationType="field-curvature" parameter={curvatureAmount} />
+              </div>
+            </div>
             
             <div className="glass p-8 rounded-xl space-y-8 neon-border">
               <Slider 
