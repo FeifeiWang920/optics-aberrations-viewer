@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
 
 interface AberrationVisualsProps {
   aberrationType: 'spherical' | 'coma' | 'astigmatism' | 'field-curvature' | 'distortion' | 'chromatic';
@@ -20,7 +19,7 @@ export function AberrationVisuals({ aberrationType, parameter }: AberrationVisua
   const renderContent = () => {
     switch (aberrationType) {
       case 'spherical': {
-        const points = [];
+        const points: { x: number; y: number }[] = [];
         for (let i = 0; i < 400; i++) {
           const u = pRNG(i);
           const v = pRNG(i + 1000);
@@ -42,7 +41,7 @@ export function AberrationVisuals({ aberrationType, parameter }: AberrationVisua
       }
 
       case 'coma': {
-        const points = [];
+        const points: { x: number; y: number }[] = [];
         // Coma circles are rings of varying location and size
         for (let i = 0; i < 400; i++) {
           const u = pRNG(i);
@@ -66,7 +65,7 @@ export function AberrationVisuals({ aberrationType, parameter }: AberrationVisua
       }
 
       case 'astigmatism': {
-        const points = [];
+        const points: { r: number; theta: number }[] = [];
         for (let i = 0; i < 200; i++) {
           const u = pRNG(i);
           const v = pRNG(i + 1000);
@@ -106,7 +105,7 @@ export function AberrationVisuals({ aberrationType, parameter }: AberrationVisua
       }
 
       case 'chromatic': {
-        const points = [];
+        const points: { r: number; theta: number }[] = [];
         for (let i = 0; i < 200; i++) {
           const u = pRNG(i);
           const v = pRNG(i + 1000);
@@ -140,7 +139,7 @@ export function AberrationVisuals({ aberrationType, parameter }: AberrationVisua
       }
 
       case 'distortion': {
-        const lines = [];
+        const lines: React.ReactNode[] = [];
         const gridSize = 10;
         const spacing = 20;
         const totalSize = gridSize * spacing;
@@ -179,7 +178,7 @@ export function AberrationVisuals({ aberrationType, parameter }: AberrationVisua
       }
 
       case 'field-curvature': {
-         const gridPoints = [];
+         const gridPoints: { x: number; y: number; blurR: number }[] = [];
          const gridSize = 12;
          const spacing = 18;
          
