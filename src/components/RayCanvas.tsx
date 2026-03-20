@@ -136,22 +136,43 @@ export function RayCanvas({ aberrationType, parameter, rayCount = 11 }: RayCanva
         const angles = [0.2, 0.1, 0, -0.1, -0.2];
         let idCounter = 0;
         
+        // 畸变本质是由孔径光阑 (Aperture Stop) 位置引起的。
+        // parameter: -1 (Barrel / 前置光阑) 到 1 (Pincushion / 后置光阑)
+        const stopDistance = parameter * 70; // 控制光阑的位置移动
+        const stopX = centerX + stopDistance;
+
         angles.forEach((angle) => {
             const bundleCount = 3;
-            const step = (lensHeight/3) / (bundleCount - 1); 
+            // 光阑的相对孔径很小
+            const stopRadius = 15;
+            const step = (stopRadius * 2) / (bundleCount - 1); 
+            
+            // 为了让学生清晰追踪不同的斜入射光束，为每个视场角分配特有的高对比度颜色
+            let color = '#22c55e'; // 中轴 绿色
+            if (angle > 0.15) color = '#ec4899';      // 大正角 粉红色
+            else if (angle > 0.05) color = '#f59e0b'; // 小正角 琥珀橘
+            else if (angle < -0.15) color = '#8b5cf6';// 大负角 亮紫色
+            else if (angle < -0.05) color = '#0ea5e9';// 小负角 湖蓝色
+
             for (let i = 0; i < bundleCount; i++) {
-                const h = -lensHeight / 6 + i * step;
-                const x2 = centerX, y2 = centerY + h;
-                const x1 = 0, y1 = y2 - Math.tan(angle) * centerX;
+                const h_stop = -stopRadius + i * step;
+                
+                // 光束必须穿过入瞳(前端光阑或其像)
+                // 这决定了光束打击在透镜上的高度
+                const dx = centerX - stopX; 
+                const y_lens = centerY + h_stop + dx * Math.tan(angle);
+                
+                const x2 = centerX, y2 = y_lens;
+                const x1 = 0, y1 = y_lens - centerX * Math.tan(angle); // 从无穷远射入
                 
                 const focusX = centerX + 200;
                 const idealY = centerY + Math.tan(angle) * 200;
                 
+                // Y高度的三次方像差移位
                 const distAmount = (angle * angle * angle) * 4000 * parameter;
                 const focusY = idealY + distAmount;
                 
-                const isCenter = angle === 0;
-                addRay(idCounter++, x1, y1, x2, y2, focusX, focusY, isCenter ? '#22c55e' :'#a855f7', 0.6);
+                addRay(idCounter++, x1, y1, x2, y2, focusX, focusY, color, 0.6);
             }
         });
     }
@@ -210,6 +231,15 @@ export function RayCanvas({ aberrationType, parameter, rayCount = 11 }: RayCanva
           stroke="rgba(34, 211, 238, 0.5)"
           strokeWidth="2"
         />
+
+        {/* Dynamic Aperture Stop for Distortion */}
+        {aberrationType === 'distortion' && Math.abs(parameter) > 0.1 && (
+          <g>
+            <line x1={centerX + parameter * 70} y1={centerY - 200} x2={centerX + parameter * 70} y2={centerY - 25} stroke="rgba(255,255,255,0.8)" strokeWidth="4" />
+            <line x1={centerX + parameter * 70} y1={centerY + 25} x2={centerX + parameter * 70} y2={centerY + 200} stroke="rgba(255,255,255,0.8)" strokeWidth="4" />
+            <text x={centerX + parameter * 70 - (parameter < 0 ? 60 : -10)} y={centerY - 40} fill="rgba(255,255,255,0.8)" fontSize="12" fontWeight="bold">光阑(Stop)</text>
+          </g>
+        )}
       </svg>
       
       <div className="absolute bottom-4 right-4 flex gap-4 text-[10px] uppercase tracking-widest text-slate-500 font-bold">

@@ -6,6 +6,7 @@ import { AberrationPageLayout } from '@/components/AberrationPageLayout';
 import { RayCanvas } from '@/components/RayCanvas';
 import { Slider } from '@/components/Slider';
 import { AberrationVisuals } from '@/components/AberrationVisuals';
+import Link from 'next/link';
 
 export default function DistortionPage() {
   const [distortionAmount, setDistortionAmount] = useState(0.5);
@@ -28,10 +29,15 @@ export default function DistortionPage() {
       >
         <div className="space-y-12">
           <section className="space-y-6">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              <span className="text-accent-cyan">01.</span> 
-              几何形变模拟 (Barrel & Pincushion)
-            </h2>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <span className="text-accent-cyan">01.</span> 
+                几何形变模拟 (Barrel & Pincushion)
+              </h2>
+              <Link href="/aberrations/distortion/deep-dive" className="px-6 py-2 bg-accent-purple/20 text-accent-purple hover:bg-accent-purple/30 border border-accent-purple/30 rounded-lg text-sm font-bold transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                深度解密：畸变究竟从何而来？ &rarr;
+              </Link>
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
               <div className="lg:col-span-3">
                 <RayCanvas 
