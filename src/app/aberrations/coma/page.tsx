@@ -6,6 +6,7 @@ import { AberrationPageLayout } from '@/components/AberrationPageLayout';
 import { RayCanvas } from '@/components/RayCanvas';
 import { Slider } from '@/components/Slider';
 import { AberrationVisuals } from '@/components/AberrationVisuals';
+import Link from 'next/link';
 
 export default function ComaPage() {
   const [comaAmount, setComaAmount] = useState(0.5);
@@ -28,10 +29,15 @@ export default function ComaPage() {
       >
         <div className="space-y-12">
           <section className="space-y-6">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              <span className="text-accent-cyan">01.</span> 
-              彗点形状模拟 (Comatic Flare Simulation)
-            </h2>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <span className="text-accent-cyan">01.</span> 
+                彗点形状模拟 (Comatic Flare Simulation)
+              </h2>
+              <Link href="/aberrations/coma/deep-dive" className="px-6 py-2 bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 border border-orange-500/30 rounded-lg text-sm font-bold transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(249,115,22,0.2)]">
+                深度解密：不可思议的偏心圆法则 &rarr;
+              </Link>
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
               <div className="lg:col-span-3">
                 <RayCanvas 

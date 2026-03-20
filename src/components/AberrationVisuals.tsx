@@ -41,66 +41,164 @@ export function AberrationVisuals({ aberrationType, parameter }: AberrationVisua
       }
 
       case 'coma': {
-        const points: { x: number; y: number }[] = [];
-        // Coma circles are rings of varying location and size
-        for (let i = 0; i < 400; i++) {
-          const u = pRNG(i);
-          const v = pRNG(i + 1000);
-          const r_aperture = Math.sqrt(u);
-          const theta = v * 2 * Math.PI;
+        const rings: React.ReactNode[] = [];
+        const ringCount = 8; // 8 个极其分明的透镜入射光带
+        const w31 = 70 * parameter; // 增大差值以突显展开感
+        
+        for (let i = 1; i <= ringCount; i++) {
+          const r_aperture = i / ringCount; 
+          const pointsStr = [];
           
-          const w31 = 60 * parameter;
-          // transverse coma formula derived from Seidel theory
-          const shiftY = w31 * r_aperture * r_aperture * (2 + Math.cos(2 * theta)) - (w31 * 2); 
-          const shiftX = w31 * r_aperture * r_aperture * Math.sin(2 * theta);
-          points.push({ x: shiftX, y: shiftY });
+          for (let j = 0; j <= 60; j++) {
+            const theta = (j / 60) * 2 * Math.PI;
+            // 彗差的横向方程：不强行整体居中！
+            // 强制将理想焦点固定在 (0,0) (即彗核顶点)。让偏心圆自己向外“流淌”出来！
+            const shiftY = w31 * r_aperture * r_aperture * (2 + Math.cos(2 * theta)); 
+            const shiftX = w31 * r_aperture * r_aperture * Math.sin(2 * theta);
+            pointsStr.push(`${shiftX},${shiftY}`);
+          }
+          
+          const hue = 190 - r_aperture * 160; 
+          rings.push(
+            // 彻底去除 fill 填充！只保留恒定线宽的虚线轨迹。
+            // 这就彻底打破了“一整块发光体被放大缩小”的错觉。
+            <polygon 
+              key={`ring-${i}`} 
+              points={pointsStr.join(' ')} 
+              fill="none" 
+              stroke={`hsla(${hue}, 100%, 65%, 0.8)`} 
+              strokeWidth={1.5}
+              strokeDasharray="4 6" /* 虚线代表数学轨迹 */
+            />
+          );
+          
+          // 在每圈轨道上散布 12 个恒定大小的离散光点，跟着轨道扩散。
+          // 光点绝对大小不变，只有坐标位移，完全暴露其数学运动本质。
+          for (let j = 0; j < 12; j++) {
+            const theta = (j / 12) * 2 * Math.PI;
+            const shiftY = w31 * r_aperture * r_aperture * (2 + Math.cos(2 * theta)); 
+            const shiftX = w31 * r_aperture * r_aperture * Math.sin(2 * theta);
+            rings.push(<circle key={`pt-${i}-${j}`} cx={shiftX} cy={shiftY} r={2.5} fill={`hsla(${hue}, 100%, 80%, 1)`} />);
+          }
         }
+        
+        if (Math.abs(parameter) > 0.05) {
+            // Apex 固定在 0。最远的 Y 是 r=1 时，2+cos=3，即 3 * w31
+            const apexY = 0; 
+            const endY = w31 * 3; 
+            const dy = endY - apexY;
+            const dx = dy * Math.tan(30 * Math.PI / 180); 
+            
+            rings.push(
+              <g key="envelope" stroke="rgba(255,255,255,0.6)" strokeWidth="1.5" strokeDasharray="6 6" fill="none">
+                <line x1={0} y1={apexY} x2={dx} y2={endY} />
+                <line x1={0} y1={apexY} x2={-dx} y2={endY} />
+              </g>
+            );
+        }
+
+        // 顶点主光束的理想位置：被死死钉死在画面上方中轴线上
+        rings.push(<circle key="apex" cx={0} cy={0} r={4} fill="#fff" className="shadow-[0_0_10px_#fff]" />);
+
         return (
-          <g transform={`translate(${center}, ${center + 40 * parameter})`}>
-            {points.map((p, i) => (
-              <circle key={i} cx={p.x} cy={p.y} r={1.5} fill="rgba(34, 211, 238, 0.5)" />
-            ))}
+          // 整个绘制坐标系顶点上移，给彗差尾部留下疯狂向下散落生长的空间！
+          <g transform={`translate(${center}, ${center - 80})`}>
+            {rings}
           </g>
         );
       }
 
       case 'astigmatism': {
-        const points: { r: number; theta: number }[] = [];
-        for (let i = 0; i < 200; i++) {
-          const u = pRNG(i);
-          const v = pRNG(i + 1000);
-          const r = Math.sqrt(u);
-          const theta = v * 2 * Math.PI;
-          points.push({ r, theta });
+        const rings: React.ReactNode[] = [];
+        const L = 80 * parameter; // 斯特林距的一半 (Half of Sturm Interval)
+        const k = 0.4; // 聚焦光锥的孔径斜率
+        const tilt = 0.35; // 3D 侧视角的等轴投影压缩率 (模拟纵深)
+        
+        // 1. 绘制连续的光截面 (Cross-section rings) 以构建真 3D 光锥
+        // 从聚焦透镜后方 (Z=-160) 一直追踪到极远处 (Z=160)
+        for (let Z = -160; Z <= 160; Z += 8) {
+          // 子午面(Tangential)在垂直方向(Y轴)汇聚，焦点在 Z = -L
+          const Ry = k * Math.abs(Z + L);
+          // 弧矢面(Sagittal)在水平进深方向(X轴)汇聚，焦点在 Z = L
+          const Rx = k * Math.abs(Z - L);
+          
+          // 根据切面所在位置计算体积光透明度
+          const alpha = 0.15 + 0.3 * Math.exp(-(Z*Z)/10000);
+          
+          rings.push(
+            <ellipse 
+              key={`ring-${Z}`} 
+              cx={Z} 
+              cy={0} 
+              rx={Math.max(Rx * tilt, 0.1)} // 乘以 tilt 实现 3D 视觉透视
+              ry={Math.max(Ry, 0.1)} 
+              fill={`rgba(34, 211, 238, ${alpha * 0.1})`}
+              stroke={`rgba(34, 211, 238, ${alpha})`}
+              strokeWidth={1}
+            />
+          );
         }
-        
-        // Astigmatism shows different blurred shapes based on focal plane
-        // Sagittal Focus: vertical line
-        // Medial Focus: circle of least confusion
-        // Tangential Focus: horizontal line
-        const spread = 40 * parameter;
-        
-        const renderSpots = (offsetX: number, sx: number, sy: number, label: string) => (
-          <g transform={`translate(${offsetX}, ${center})`}>
-            {points.map((p, i) => (
-              <circle 
-                key={i} 
-                cx={p.r * Math.cos(p.theta) * sx} 
-                cy={p.r * Math.sin(p.theta) * sy} 
-                r={1} 
-                fill="rgba(34, 211, 238, 0.6)" 
-              />
-            ))}
-            <text y={60} fontSize="10" fill="#a855f7" textAnchor="middle" className="font-bold tracking-widest">{label}</text>
+
+        // 2. 绘制光锥的外包络透视线 (Ray boundaries)
+        const z1 = -160, z2 = 160;
+        // 子午面(垂直)边缘光线：在 Z = -L 处发生 X 交叉
+        rings.push(
+          <g key="t-rays" stroke="rgba(255, 255, 255, 0.8)" strokeWidth="1.5">
+            <line x1={z1} y1={k * (z1 + L)} x2={z2} y2={k * (z2 + L)} />
+            <line x1={z1} y1={-k * (z1 + L)} x2={z2} y2={-k * (z2 + L)} />
+          </g>
+        );
+        // 弧矢面(水平进出屏幕)边缘光线：在 Z = L 处发生交叉，视觉上被 tilt 压缩。
+        rings.push(
+          <g key="s-rays" stroke="rgba(168, 85, 247, 0.8)" strokeWidth="1.5" strokeDasharray="4 4" opacity={0.8}>
+            <line x1={z1} y1={k * (z1 - L) * tilt} x2={z2} y2={k * (z2 - L) * tilt} />
+            <line x1={z1} y1={-k * (z1 - L) * tilt} x2={z2} y2={-k * (z2 - L) * tilt} />
           </g>
         );
 
+        // 3. 标注并凸显三个物理学极其核心的靶面位置
+        if (parameter > 0.05) {
+          // 子午焦线 (T-focus at Z = -L) 
+          // 纵向(垂直)已经收紧汇聚到0，而横向(深)还未汇聚，所以视觉上是一条水平线。
+          rings.push(
+            <g key="t-plane" transform={`translate(${-L}, 0)`}>
+              <line x1={0} y1={-80} x2={0} y2={80} stroke="rgba(255,255,255,0.2)" strokeDasharray="2 2" />
+              <text x={0} y={-90} fill="#fff" fontSize={11} textAnchor="middle" opacity={0.8}>子午焦线</text>
+              <line x1={-(k * (2*L) * tilt)} y1={0} x2={(k * (2*L) * tilt)} y2={0} stroke="#fff" strokeWidth={3} className="shadow-[0_0_10px_#fff]" />
+            </g>
+          );
+          // 最小弥散圆 (Circle of least confusion at Z = 0)
+          rings.push(
+            <g key="c-plane" transform={`translate(0, 0)`}>
+              <line x1={0} y1={-80} x2={0} y2={80} stroke="rgba(34,211,238,0.4)" strokeDasharray="2 2" />
+              <text x={0} y={95} fill="#22d3ee" fontSize={11} textAnchor="middle" opacity={1}>最小弥散圆</text>
+              <ellipse cx={0} cy={0} rx={k*L*tilt} ry={k*L} stroke="#22d3ee" fill="rgba(34,211,238,0.3)" strokeWidth={2} />
+            </g>
+          );
+          // 弧矢焦线 (S-focus at Z = L)
+          // 横向(深)已经收紧汇聚到0，但前面的面已经发散形成了纵向宽度，所以视觉上是一条绝对的垂直线。
+          rings.push(
+            <g key="s-plane" transform={`translate(${L}, 0)`}>
+              <line x1={0} y1={-80} x2={0} y2={80} stroke="rgba(168,85,247,0.4)" strokeDasharray="2 2" />
+              <text x={0} y={-90} fill="#a855f7" fontSize={11} textAnchor="middle" opacity={1}>弧矢焦线</text>
+              <line x1={0} y1={-(k * (2*L))} x2={0} y2={(k * (2*L))} stroke="#a855f7" strokeWidth={3} className="shadow-[0_0_10px_#a855f7]" />
+            </g>
+          );
+        } else {
+          // 完美合焦 (Parameter = 0)
+          rings.push(
+            <g key="perfect-focus" transform={`translate(0, 0)`}>
+              <line x1={0} y1={-80} x2={0} y2={80} stroke="rgba(255,255,255,0.4)" strokeDasharray="2 2" />
+              <text x={0} y={-90} fill="#fff" fontSize={12} textAnchor="middle" opacity={0.9}>无像散 (理想共焦点)</text>
+              <circle cx={0} cy={0} r={4} fill="#fff" className="shadow-[0_0_10px_#fff]" />
+            </g>
+          );
+        }
+
         return (
-          <>
-            {renderSpots(size * 0.2, spread, 2, "子午焦线")}
-            {renderSpots(size * 0.5, spread/2, spread/2, "最小弥散圆")}
-            {renderSpots(size * 0.8, 2, spread, "弧矢焦线")}
-          </>
+          <g transform={`translate(${center}, ${center})`}>
+            {rings}
+          </g>
         );
       }
 
