@@ -14,9 +14,17 @@ export default function ChromaticAberrationPage() {
     <main className="min-h-screen">
       <Navbar />
       
-      <AberrationPageLayout
+      <AberrationPageLayout 
         title="色差 (Chromatic Aberration)"
-        theory="色差是由于光学玻璃对不同波长的光具有不同的折射率（色散现象）引起的。短波长的光（如蓝光）折射更强，焦点更靠近透镜；长波长的光（如红光）折射更弱，焦点更远。这会导致成像边缘出现彩色光晕。"
+        theory="由于不同波长（颜色）的光在折射介质中的折射率不同——通常短波长（蓝光）的折射率较长波长（红光）大。这导致白光经过透镜后，不同颜色的光无法汇聚在同一个焦点上。表现为高对比度边缘出现紫边或红蓝晕影，被称为位置色差（轴向色差）。"
+        tips={[
+          "材料对不同波长光线的色散率不同引起。",
+          "短波长焦距短（蓝偏内），长波长焦距长（红偏外）。",
+          "通常使用不同色散率的玻璃组合成消色差双合透镜（Achromat）进行校正。"
+        ]}
+        mathExpression={<>
+          f(λ) = 1 / [(n(λ) - 1)(1/R<sub>1</sub> - 1/R<sub>2</sub>)]
+        </>}
       >
         <div className="space-y-12">
           <section className="space-y-6">
@@ -24,7 +32,7 @@ export default function ChromaticAberrationPage() {
               <span className="text-accent-cyan">01.</span> 
               色散模拟 (Dispersion Simulation)
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
               <div className="lg:col-span-3">
                 <div className="relative">
                     <RayCanvas 

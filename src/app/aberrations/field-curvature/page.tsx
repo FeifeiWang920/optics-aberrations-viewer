@@ -14,9 +14,17 @@ export default function FieldCurvaturePage() {
     <main className="min-h-screen">
       <Navbar />
       
-      <AberrationPageLayout
+      <AberrationPageLayout 
         title="场曲 (Field Curvature)"
-        theory="场曲（Petzval场曲）是指光学系统对平面物体成像时，其像面不再是一个平面，而是一个弯曲的曲面。这会导致当图像中心清晰时，边缘模糊；或者当边缘清晰时，中心模糊。场曲是由于透镜的形状和材料特性决定的，即使没有球差和像散，场曲依然可能存在。"
+        theory="场曲（Petzval 场曲）是指平面物体通过透镜系统成像时，其像面不是一个平面，而是一个弯曲的表面（曲面）。这意味着如果屏幕是平坦的，你无法同时使得图像的中心和边缘都清晰：当中心合焦时边缘会模糊，反之亦然。这在显微镜和广角摄影中是需要重点校正的问题。"
+        tips={[
+          "实际像平面为一个凹陷或凸出的旋转准抛物面(Petzval面)。",
+          "平坦的感光原件上表现为：中心清晰时边缘模糊，或边缘清晰时中心模糊。",
+          "通过引入特殊厚度的平场镜(Field Flattener)或利用正负透镜组匹配折射率消除。"
+        ]}
+        mathExpression={<>
+          1/R<sub>P</sub> = -n &sum; (1 / n<sub>i</sub>f<sub>i</sub>)
+        </>}
       >
         <div className="space-y-12">
           <section className="space-y-6">
@@ -24,7 +32,7 @@ export default function FieldCurvaturePage() {
               <span className="text-accent-cyan">01.</span> 
               像面弯曲模拟 (Petzval Surface Simulation)
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
               <div className="lg:col-span-3">
                 <RayCanvas 
                   aberrationType="field-curvature" 

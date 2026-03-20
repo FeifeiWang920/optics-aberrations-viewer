@@ -14,9 +14,17 @@ export default function ComaPage() {
     <main className="min-h-screen">
       <Navbar />
       
-      <AberrationPageLayout
-        title="彗差 (Coma)"
-        theory="彗差是一种出现在离轴点光源成像中的像差。当光线斜着射入光学系统时，由于透镜不同区域的放大率不同，导致成像点变成了一个彗星状的弥散斑（头部尖锐亮，尾部发散）。这种像差在广角镜头或天文望远镜的边缘观测中尤为明显。"
+      <AberrationPageLayout 
+        title="彗差 (Coma Aberration)"
+        theory="当离轴光束（不平行于光轴的光线）穿过透镜时，不同环带上的光线经过折射后，其交点不能集中于一点，而是形成一系列不对称的偏心圆。这些交点的叠加在像平面上形成一个具有彗星般尾巴的弥散斑，这种不对称的像差被称为彗差。"
+        tips={[
+          "由离轴视场点斜射发出的宽泛光束产生。",
+          "形成形如彗星的非对称弥散斑，严重影响彗星观测等天文摄影的边缘星点形状。",
+          "消除彗差必须满足阿贝正弦条件 (Abbe Sine Condition)。"
+        ]}
+        mathExpression={<>
+          Δy' = W<sub>131</sub> &middot; ρ<sup>2</sup> (2 + cos 2θ)
+        </>}
       >
         <div className="space-y-12">
           <section className="space-y-6">
@@ -24,7 +32,7 @@ export default function ComaPage() {
               <span className="text-accent-cyan">01.</span> 
               彗点形状模拟 (Comatic Flare Simulation)
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
               <div className="lg:col-span-3">
                 <RayCanvas 
                   aberrationType="coma" 

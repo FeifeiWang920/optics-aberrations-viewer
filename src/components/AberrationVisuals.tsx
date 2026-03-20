@@ -205,12 +205,12 @@ export function AberrationVisuals({ aberrationType, parameter }: AberrationVisua
   };
 
   return (
-    <div className="w-full glass rounded-xl border border-white/5 p-6 space-y-4">
+    <div className="w-full h-full flex flex-col glass rounded-xl border border-white/5 p-6 space-y-4">
       <h3 className="text-sm font-bold text-accent-cyan uppercase tracking-widest flex items-center justify-between">
         <span>典型光斑图 / 成像视图 (Characteristic View)</span>
         <span className="text-[10px] text-slate-500 font-mono">RENDER_CTX: {aberrationType}</span>
       </h3>
-      <div className="relative w-full aspect-video bg-black/40 rounded-lg overflow-hidden border border-white/5 flex items-center justify-center shadow-inner">
+      <div className="relative w-full flex-grow min-h-[300px] bg-black/40 rounded-lg overflow-hidden border border-white/5 flex items-center justify-center shadow-inner">
         {/* Helper visual grid in background */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
         

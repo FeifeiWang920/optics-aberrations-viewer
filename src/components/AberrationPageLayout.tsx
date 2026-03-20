@@ -6,10 +6,12 @@ import { motion } from 'framer-motion';
 interface AberrationPageLayoutProps {
   title: string;
   theory: string;
+  tips: string[];
+  mathExpression: React.ReactNode;
   children: React.ReactNode;
 }
 
-export function AberrationPageLayout({ title, theory, children }: AberrationPageLayoutProps) {
+export function AberrationPageLayout({ title, theory, tips, mathExpression, children }: AberrationPageLayoutProps) {
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
       <motion.div
@@ -36,27 +38,20 @@ export function AberrationPageLayout({ title, theory, children }: AberrationPage
               物理小贴士
             </h3>
             <ul className="space-y-4 text-slate-400 text-sm">
-              <li className="flex gap-2">
-                <span className="text-accent-cyan">•</span>
-                <span>轴上物点的单色光成像缺陷。</span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-accent-cyan">•</span>
-                <span>主要由于球面折射面的折射能力随入射高度增加而增强。</span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-accent-cyan">•</span>
-                <span>可以通过使用非球面镜或复合透镜组来消除。</span>
-              </li>
+              {tips.map((tip, index) => (
+                <li key={index} className="flex gap-2 leading-relaxed">
+                  <span className="text-accent-cyan">•</span>
+                  <span>{tip}</span>
+                </li>
+              ))}
             </ul>
           </div>
           
           <div className="glass p-6 rounded-xl border border-white/5 bg-accent-purple/5">
-            <h3 className="text-xl font-bold mb-4 text-accent-purple">数学表达式</h3>
-            <code className="text-xs text-purple-200 block bg-black/40 p-4 rounded-md font-mono leading-relaxed">
-              Δs' = s' - s'_0 <br />
-              = k * h² + ...
-            </code>
+            <h3 className="text-xl font-bold mb-4 text-accent-purple">核心教学公式</h3>
+            <div className="text-sm text-purple-200 block bg-black/40 p-4 rounded-md font-mono leading-relaxed overflow-x-auto">
+              {mathExpression}
+            </div>
           </div>
         </div>
       </div>

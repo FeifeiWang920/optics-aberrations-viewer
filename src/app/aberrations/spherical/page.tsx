@@ -17,7 +17,15 @@ export default function SphericalAberrationPage() {
       
       <AberrationPageLayout
         title="球差 (Spherical Aberration)"
-        theory="球差是由于透镜（或面镜）的球面形状造成的。随着入射光线离光轴越远，它的折射（或反射）能力越强，导致边缘光线的焦点比近轴光线的焦点更靠近透镜。这种现象使得成像点不再是一个锐利的点，而是一个具有一定直径的弥散斑。"
+        theory="当平行光轴的光束垂直射入球面透镜时，靠近光轴的近轴光线与远离光轴的边缘光线在折射后不能交于同一点。边缘光线的折射能力更强，其焦点更靠近透镜，从而在光轴上形成了一个弥散的光斑，这种缺陷被称为球差。球差主要影响图像的锐度，是唯一一种存在于轴上物点的单色像差。"
+        tips={[
+          "这是唯一的轴上物点单色光成像缺陷。",
+          "由于球面折射面的折射能力随入射高度增加而增强。",
+          "可以通过组合正负透镜或使用抛物面等非球面来校正。"
+        ]}
+        mathExpression={<>
+          ΔL' = W<sub>040</sub> &middot; ρ<sup>2</sup> + W<sub>060</sub> &middot; ρ<sup>4</sup> + ...
+        </>}
       >
         <div className="space-y-12">
           <section className="space-y-6">
@@ -25,7 +33,7 @@ export default function SphericalAberrationPage() {
               <span className="text-accent-cyan">01.</span> 
               交互式物理模拟
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
               <div className="lg:col-span-3">
                 <RayCanvas 
                   aberrationType="spherical" 

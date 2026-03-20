@@ -3,6 +3,7 @@
 import { Navbar } from '@/components/Navbar';
 import { AberrationCard } from '@/components/AberrationCard';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { 
   Zap, 
   CircleDot, 
@@ -79,12 +80,12 @@ export default function Home() {
               深入理解光线如何在非理想系统中传播并产生误差。
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button className="px-8 py-3 bg-accent-cyan text-slate-950 font-bold rounded-lg hover:bg-accent-cyan/90 transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(34,211,238,0.4)]">
+              <Link href="#aberrations-grid" className="px-8 py-3 bg-accent-cyan text-slate-950 font-bold rounded-lg hover:bg-accent-cyan/90 transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(34,211,238,0.4)]">
                 开始学习
-              </button>
-              <button className="px-8 py-3 glass neon-border text-white font-bold rounded-lg hover:bg-white/5 transition-all">
+              </Link>
+              <Link href="/aberrations/spherical" className="px-8 py-3 glass neon-border text-white font-bold rounded-lg hover:bg-white/5 transition-all">
                 物理原理
-              </button>
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -95,7 +96,7 @@ export default function Home() {
       </section>
 
       {/* Aberrations Grid */}
-      <section className="py-20 px-6 bg-slate-950/30">
+      <section id="aberrations-grid" className="py-20 px-6 bg-slate-950/30">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-12">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-accent-cyan/20"></div>

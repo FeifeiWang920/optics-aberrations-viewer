@@ -14,9 +14,17 @@ export default function AstigmatismPage() {
     <main className="min-h-screen">
       <Navbar />
       
-      <AberrationPageLayout
+      <AberrationPageLayout 
         title="像散 (Astigmatism)"
-        theory="像散是指由于光学系统在相互垂直的两个平面（子午面和弧矢面）上的折射能力不同，导致轴外物点发出的圆锥光束经系统折射后不再汇聚于一点，而是形成两条相互垂直、间隔一定距离的焦线。在两个焦线之间，光束的截面是一个弥散圆（最小弥散圆）。"
+        theory="像散是由于离轴光束在透镜的子午面（包含光轴的平面）和弧矢面（垂直于子午面的平面）的折射能力不同所引起的像差。这会导致离轴物点不能成像为一个点，而是形成两条相互垂直、且位于不同位置的短线（焦线）。在两焦线之间，光斑的形状会从长椭圆变成一个模糊的圆（最小弥散圆），再变成横椭圆。"
+        tips={[
+          "子午面与弧矢面的折光率相异，产生斯特林距(Sturm's interval)。",
+          "成像呈现垂直的双焦线与中间的最小弥散圆。",
+          "即使透镜是完美回转对称球面，宽光束离轴斜射也会产生固有像散。"
+        ]}
+        mathExpression={<>
+          Δx = x'<sub>s</sub> - x'<sub>t</sub> &propto; W<sub>222</sub> &middot; y<sub>obj</sub><sup>2</sup>
+        </>}
       >
         <div className="space-y-12">
           <section className="space-y-6">
@@ -24,7 +32,7 @@ export default function AstigmatismPage() {
               <span className="text-accent-cyan">01.</span> 
               焦线与弥散圆模拟
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
               <div className="lg:col-span-3">
                 <RayCanvas 
                   aberrationType="astigmatism" 

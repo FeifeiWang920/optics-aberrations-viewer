@@ -14,9 +14,17 @@ export default function DistortionPage() {
     <main className="min-h-screen">
       <Navbar />
       
-      <AberrationPageLayout
+      <AberrationPageLayout 
         title="畸变 (Distortion)"
-        theory="畸变是指光学系统的垂轴放大率随像高（离轴距离）的变化而变化，导致成像的几何形状发生形变。畸变不影响成像的清晰度，只影响位置精度。常见的畸变有桶形畸变（放大率随高度增加而减小）和枕形畸变（放大率随高度增加而增加）。"
+        theory="畸变是一种不影响图像清晰度，只影响图像几何形状的像差。它是由于光学系统的横向放大率随离轴距离（视场角）变化而引起的。如果放大率随离轴距离增加而增加，会产生中心向内凹陷的“枕形畸变”；如果放大率随离轴距离增加而减小，则产生边缘向外凸出的“桶形畸变”。"
+        tips={[
+          "唯一不影响图像点锐度和清晰度，仅横向放大率随视场角非线性变化的像差。",
+          "放大率逐渐减小形成桶形(Barrel)，逐渐变大形成枕形(Pincushion)。",
+          "通常由于孔径光阑(Aperture Stop)的前置或后置引起不对称折射导致。"
+        ]}
+        mathExpression={<>
+          Δy' = W<sub>311</sub> &middot; y<sub>obj</sub><sup>3</sup>
+        </>}
       >
         <div className="space-y-12">
           <section className="space-y-6">
@@ -24,7 +32,7 @@ export default function DistortionPage() {
               <span className="text-accent-cyan">01.</span> 
               几何形变模拟 (Barrel & Pincushion)
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
               <div className="lg:col-span-3">
                 <RayCanvas 
                   aberrationType="distortion" 
